@@ -1,0 +1,69 @@
+// Prisma schema for the AI‑powered workflow automation backend
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String               @id @default(uuid())
+  name               String
+  email              String               @unique
+  password           String
+  subscription       String               @default("Free")
+  workflows          Workflow[]
+  credentials        Credential[]
+  passwordResetTokens PasswordResetToken[]
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+}
+
+model Workflow {
+  id            String        @id @default(uuid())
+  name          String
+  description   String?
+  configuration Json
+  status        Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  userId        String
+  user          User          @relation(fields: [userId], references: [id])
+  executionLogs ExecutionLog[]
+}
+
+model Credential {
+  id            String     @id @default(uuid())
+  service       String
+  encryptedData String
+  userId        String
+  user          User       @relation(fields: [userId], references: [id])
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model ExecutionLog {
+  id         String    @id @default(uuid())
+  status     String
+  data       Json?
+  workflowId String
+  workflow   Workflow  @relation(fields: [workflowId], references: [id])
+  createdAt  DateTime  @default(now())
+}
+
+// Password reset tokens for forgot password flow
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  tokenHash String   // Hashed reset token (never store raw token)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}

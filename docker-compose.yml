@@ -1,0 +1,61 @@
+services:
+  db:
+    image: postgres:14
+    container_name: ai_workflow_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ai_workflow
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  backend:
+    build: ./backend
+    container_name: ai_workflow_backend
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/ai_workflow
+      PORT: 3001
+      # These values should be overridden with real keys in production. They are
+      # provided here for local development and demonstration.
+      JWT_SECRET: supersecretjwt
+      ENCRYPTION_KEY: supersecretencryption
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_DEFAULT_MODEL: ${OPENROUTER_DEFAULT_MODEL:-openai/gpt-3.5-turbo}
+      N8N_API_URL: ${N8N_API_URL:-}
+      N8N_API_KEY: ${N8N_API_KEY:-}
+      N8N_MCP_URL: ${N8N_MCP_URL:-}
+    depends_on:
+      - db
+    ports:
+      - "3001:3001"
+
+  frontend:
+    build: ./frontend
+    container_name: ai_workflow_frontend
+    depends_on:
+      - backend
+    ports:
+      - "3030:80"
+
+  n8n-mcp:
+    image: ghcr.io/czlonkowski/n8n-mcp:latest
+    container_name: n8n_mcp_server
+    environment:
+      MCP_MODE: http
+      LOG_LEVEL: info
+      DISABLE_CONSOLE_OUTPUT: "true"
+      AUTH_TOKEN: "mcp-auth-token-12345"
+      # Configure these values to allow MCP to manage your n8n instance
+      N8N_API_URL: ${N8N_API_URL:-}
+      N8N_API_KEY: ${N8N_API_KEY:-}
+    ports:
+      - "3002:3000"
+    depends_on:
+      - backend
+
+volumes:
+  db-data:
