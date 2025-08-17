@@ -6,7 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App.jsx';
 import theme from './theme.js';
-import { NotificationProvider } from './components/NotificationProvider.jsx';
+import './design/tokens.css';
 
 // Create a client for react-query
 const queryClient = new QueryClient();
@@ -16,11 +16,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <NotificationProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </NotificationProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </ThemeProvider>
     </QueryClientProvider>
   </React.StrictMode>,

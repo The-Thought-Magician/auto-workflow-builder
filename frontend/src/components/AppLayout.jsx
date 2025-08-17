@@ -52,7 +52,12 @@ export default function AppLayout() {
   const drawerContent = (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Toolbar disableGutters sx={{ px: 2 }}>
-        <Typography variant="h6" fontWeight={600} sx={{ background: 'linear-gradient(90deg,#8b5cf6,#5b74f9)', WebkitBackgroundClip: 'text', color: 'transparent' }}>
+        <Typography variant="h6" fontWeight={600} className="gradient-text" sx={{ 
+          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', 
+          WebkitBackgroundClip: 'text', 
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text'
+        }}>
           AI Automator
         </Typography>
       </Toolbar>
@@ -63,11 +68,15 @@ export default function AppLayout() {
             key={item.to}
             component={NavLink}
             to={item.to}
-            sx={() => ({
+            sx={{
               '&.active, &[aria-current=page]': {
-                background: 'linear-gradient(90deg, rgba(139,92,246,0.18), rgba(91,116,249,0.18))'
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                borderLeft: '3px solid #3b82f6',
+                '&:hover': {
+                  backgroundColor: 'rgba(59, 130, 246, 0.25)',
+                }
               }
-            })}
+            }}
           >
             <ListItemIcon sx={{ minWidth: 36, color: 'primary.light' }}>{item.icon}</ListItemIcon>
             <ListItemText primary={item.label} />
@@ -81,7 +90,7 @@ export default function AppLayout() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar position="fixed" elevation={0} sx={{ backdropFilter: 'blur(8px)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+      <AppBar position="fixed" elevation={0}>
         <Toolbar sx={{ gap: 1 }}>
           {!isDesktop && (
             <IconButton edge="start" color="inherit" onClick={() => setDrawerOpen(true)} aria-label="open navigation">
@@ -123,7 +132,7 @@ export default function AppLayout() {
           sx={{
             width: drawerWidth,
             flexShrink: 0,
-            '& .MuiDrawer-paper': { width: drawerWidth, boxSizing: 'border-box', borderRight: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(8px)', backgroundColor: 'rgba(18,24,38,0.85)' }
+            '& .MuiDrawer-paper': { width: drawerWidth, boxSizing: 'border-box' }
           }}
         >
           {drawerContent}
@@ -134,7 +143,7 @@ export default function AppLayout() {
             open={drawerOpen}
             onClose={() => setDrawerOpen(false)}
             ModalProps={{ keepMounted: true }}
-            sx={{ '& .MuiDrawer-paper': { width: drawerWidth, backdropFilter: 'blur(10px)', backgroundColor: 'rgba(18,24,38,0.9)' } }}
+            sx={{ '& .MuiDrawer-paper': { width: drawerWidth } }}
         >
           {drawerContent}
         </Drawer>
