@@ -41,39 +41,51 @@ The provided `docker-compose.yml` defines four services:
 3. **frontend** – Builds the React app and serves it via nginx on port `3000`. The nginx configuration proxies all `/api` requests to the backend.
 4. **n8n‑mcp** – Runs the [n8n‑MCP](https://github.com/czlonkowski/n8n-mcp) server so that AI assistants can access detailed n8n node documentation and management tools. This service is optional but recommended for advanced AI workflows.
 
-## 🚀 Getting Started
+## 🚀 Quick Start (Fresh VM Deployment)
 
 ### Prerequisites
+- Docker and Docker Compose installed
+- Optional: OpenRouter API key for AI chat functionality
 
-* [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/) installed on your system.
-* An API key for your chosen LLM provider. The app is configured to work with [OpenRouter](https://openrouter.ai) by default but can be adapted to any OpenAI‑compatible API.
-* (Optional) A running n8n instance and API key if you want workflows to be persisted and executed in n8n. Without these values the app will still function, but workflow operations will be no‑ops.
+### One-Command Deployment
 
-### Setup
+```bash
+# Clone the repository
+git clone <repository-url>
+cd ai-workflow
 
-1. **Clone the repository** (or extract the provided ZIP) and navigate into it.
+# Start all services (everything auto-configured!)
+docker compose up -d
+```
 
-   ```bash
-   git clone https://your-repo-url.git
-   cd webapp
-   ```
+**That's it!** The application will be available at:
+- **Frontend**: http://localhost:3030
+- **Backend API**: http://localhost:3001  
+- **Database**: PostgreSQL on port 5433
 
-2. **Create an environment file for the backend**. Copy `backend/.env.example` to `backend/.env` and fill in the values. At minimum you must set `JWT_SECRET`, `ENCRYPTION_KEY` and `OPENROUTER_API_KEY`.
+### Configuration (Optional)
 
-   ```bash
-   cp backend/.env.example backend/.env
-   # Edit backend/.env with your preferred values
-   ```
+For full AI functionality, add your OpenRouter API key:
 
-3. **Build and start the services** with Docker Compose:
+```bash
+# Copy the example environment file
+cp .env.example .env
 
-   ```bash
-   docker-compose up --build
-   ```
+# Edit .env and add your OpenRouter API key
+echo "OPENROUTER_API_KEY=sk-or-v1-your-api-key-here" >> .env
 
-   The frontend will be available at [http://localhost:3000](http://localhost:3000), the backend API at [http://localhost:3001](http://localhost:3001) and the n8n‑MCP server at [http://localhost:3002](http://localhost:3002).
+# Restart to apply changes
+docker compose down && docker compose up -d
+```
 
-4. **Register a new account** via the web UI. You can now chat with the assistant, create workflows and manage your credentials.
+### First Use
+
+1. **Open** http://localhost:3030 in your browser
+2. **Register** a new account via the signup page
+3. **Start chatting** with the AI to create workflows
+4. **Manage credentials** for external services (Slack, Gmail, etc.)
+
+No additional configuration needed - database, migrations, and all services are automatically set up!
 
 ### Customisation
 

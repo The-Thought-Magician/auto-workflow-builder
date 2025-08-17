@@ -4,3 +4,4 @@ frontend/dist
 frontend/build
 .env
 prd.md
+node_modules
